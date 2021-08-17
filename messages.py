@@ -54,8 +54,6 @@ def state_manager(vk, user, user_text):
             keyboard.add_button('Настройки поиска', color=VkKeyboardColor.PRIMARY)
 
             user.search_age_to = int(user_text)
-            user.state = 'default'
-            db_session.commit()
 
             vk.messages.send(
                 peer_id=user.user_id,
@@ -63,6 +61,9 @@ def state_manager(vk, user, user_text):
                 keyboard=keyboard.get_keyboard(),
                 message='Сохранено'
             )
+
+            user.state = 'default'
+            db_session.commit()
     elif user.state == 'search_sex':
         if user_text in ['парни', 'девушки', 'не имеет значения']:
             if user_text == 'парни':
@@ -72,9 +73,6 @@ def state_manager(vk, user, user_text):
             elif user_text == 'не имееет значения':
                 user.search_sex = 0
 
-            user.state = 'default'
-            db_session.commit()
-
             keyboard.add_button('Настройки поиска', color=VkKeyboardColor.PRIMARY)
 
             vk.messages.send(
@@ -83,6 +81,9 @@ def state_manager(vk, user, user_text):
                 keyboard=keyboard.get_keyboard(),
                 message='Сохранено'
             )
+
+            user.state = 'default'
+            db_session.commit()
         else:
             keyboard.add_button('Парни', color=VkKeyboardColor.PRIMARY)
             keyboard.add_button('Девушки', color=VkKeyboardColor.PRIMARY)
@@ -105,9 +106,6 @@ def state_manager(vk, user, user_text):
             elif user_text == 'в активном поиске':
                 user.search_status = 6
 
-            user.state = 'default'
-            db_session.commit()
-
             keyboard.add_button('Настройки поиска', color=VkKeyboardColor.PRIMARY)
 
             vk.messages.send(
@@ -116,6 +114,9 @@ def state_manager(vk, user, user_text):
                 keyboard=keyboard.get_keyboard(),
                 message='Сохранено'
             )
+
+            user.state = 'default'
+            db_session.commit()
         else:
             keyboard.add_button('Не женат (Не замужем)', color=VkKeyboardColor.PRIMARY)
             keyboard.add_button('Все сложно', color=VkKeyboardColor.PRIMARY)
@@ -261,10 +262,12 @@ def main():
                             random_id=get_random_id(),
                             message=f'vk.com/id{user.current_page}'
                         )
+                    else:
+                        vk.messages.send(
+                            peer_id=user.user_id,
+                            random_id=get_random_id(),
+                            message=f'Для взаимодействия с ботом используй кнопки'
+                        )
         except Exception as exception:
             print(exception)
             time.sleep(5)
-
-
-if __name__ == '__main__':
-    main()
